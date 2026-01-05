@@ -1,0 +1,43 @@
+# ======================
+# Environment
+# ======================
+.env
+.env.*
+!.env.example
+
+# ======================
+# Python
+# ======================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# ======================
+# Node / Next.js
+# ======================
+node_modules/
+.next/
+out/
+npm-debug.log*
+yarn-error.log*
+
+# ======================
+# Uploads / DB
+# ======================
+uploads/
+postgres_data/
+
+# ======================
+# OS
+# ======================
+.DS_Store
+Thumbs.db
+
+# ======================
+# IDE
+# ======================
+.vscode/
+.idea/

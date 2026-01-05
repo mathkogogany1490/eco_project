@@ -1,0 +1,34 @@
+# =========================
+# FastAPI / ASGI
+# =========================
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+
+# =========================
+# Database / ORM
+# =========================
+SQLAlchemy==2.0.30
+psycopg2-binary==2.9.9
+alembic==1.13.1
+
+# =========================
+# Auth / Security
+# =========================
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+argon2-cffi==23.1.0
+
+# =========================
+# File Upload
+# =========================
+python-multipart==0.0.9
+
+# =========================
+# Environment / Config
+# =========================
+python-dotenv==1.0.1
+
+# =========================
+# HTTP / Internal
+# =========================
+starlette==0.37.2
