@@ -17,6 +17,8 @@ from app.routers import auth
 from app.routers import contract as contract_router
 from app.routers import weighing as weighing_router
 from app.routers import place as place_router
+from app.routers import waste_price as waste_price_router
+
 
 
 # =========================
@@ -71,6 +73,7 @@ app.include_router(auth.router, prefix="/api")
 app.include_router(contract_router.router, prefix="/api")
 app.include_router(weighing_router.router, prefix="/api")
 app.include_router(place_router.router, prefix="/api")
+app.include_router(waste_price_router.router, prefix="/api")
 
 
 # =========================
