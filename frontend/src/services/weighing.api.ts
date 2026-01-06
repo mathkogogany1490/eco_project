@@ -8,22 +8,27 @@ export interface WeighingBase {
     vehicle_no: string;
     gross_weight: number;
     tare_weight: number;
+    sensor_id?: string;
 }
+
 
 /**
  * 자동 계량 (SYSTEM)
  */
-export const createAutoWeighing = async (
-    data: WeighingBase,
-    systemApiKey: string
-) => {
-    const res = await api.post("/weighings/auto", data, {
-        headers: {
-            "X-API-KEY": systemApiKey,
-        },
-    });
+// src/services/weighing.api.ts
+export const createAutoWeighing = async (data: WeighingBase) => {
+    const res = await api.post(
+        "/weighings/auto",
+        data,
+        {
+            headers: {
+                "X-API-KEY": process.env.NEXT_PUBLIC_SYSTEM_API_KEY!,
+            },
+        }
+    );
     return res.data;
 };
+
 
 /**
  * 수동 계량 (ADMIN)
