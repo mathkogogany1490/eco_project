@@ -61,7 +61,7 @@ export default function Sidebar() {
                 {/* 메뉴 */}
                 <nav className="flex-1 px-3 py-4 space-y-2 overflow-y-auto">
 
-                    {role === 'ADMIN' && (
+                    {role && (
                         <>
                             <Link
                                 href="/dashboard"
