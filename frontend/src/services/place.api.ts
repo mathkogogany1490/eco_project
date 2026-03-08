@@ -1,5 +1,5 @@
 import api from './api'
-import type { Place } from '@/store/slices/placeSlice'
+import type { Place } from '@/types/placeType'
 
 /* =========================
    전체 조회
