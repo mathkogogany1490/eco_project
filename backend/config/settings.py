@@ -126,12 +126,18 @@ USE_TZ = True
 # ==================================================
 # Static / Media
 # ==================================================
+
 STATIC_URL = "/static/"
+
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+# static 폴더가 있을 때만 사용
+STATICFILES_DIRS = []
+STATIC_DIR = BASE_DIR / "static"
+
+if STATIC_DIR.exists():
+    STATICFILES_DIRS.append(STATIC_DIR)
+
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"

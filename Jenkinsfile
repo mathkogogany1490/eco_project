@@ -156,6 +156,29 @@ EOF
                 '''
             }
         }
+        stage('Django Migrate') {
+            steps {
+                sh '''
+                echo "🗄 Running Django migrations..."
+
+                docker exec eco_backend python manage.py migrate --noinput
+
+                echo "Migration complete"
+                '''
+            }
+        }
+
+        stage('Collect Static') {
+            steps {
+                sh '''
+                echo "📦 Collecting static files..."
+
+                docker exec eco_backend python manage.py collectstatic --noinput
+
+                echo "Static collection complete"
+                '''
+            }
+        }
 
         stage('Logs') {
             steps {
