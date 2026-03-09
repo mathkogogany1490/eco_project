@@ -1,0 +1,63 @@
+services:
+
+  db:
+    image: postgres:15
+    container_name: eco_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: eco_project
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+  backend:
+    build: ./backend
+    container_name: eco_backend
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+    container_name: eco_frontend
+    restart: always
+    env_file:
+      - .env
+    command: npm run start
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+
+  nginx:
+    build: ./nginx
+    container_name: eco_nginx
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+
+
+volumes:
+  postgres_data:
