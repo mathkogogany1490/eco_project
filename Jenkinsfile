@@ -111,8 +111,8 @@ NEXT_PUBLIC_SYSTEM_API_KEY=7c2a1e9b4d6c8f0a2e4d6b8c0e1f3a5
 # ==================================================
 # EMAIL (SMTP)
 # ==================================================
-EMAIL_HOST_USER=admin@dkr-eco.com
-EMAIL_HOST_PASSWORD=앱비밀번호
+EMAIL_HOST_USER=kogo3039@gmail.com
+EMAIL_HOST_PASSWORD=ulkwehnqyiwncmvo
 EOF
 
                 chmod 600 .env
