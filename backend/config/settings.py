@@ -60,7 +60,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+#     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -190,6 +190,8 @@ CSRF_TRUSTED_ORIGINS = [
     "http://3.36.130.182",
     "http://dkr-eco.com",
     "http://www.dkr-eco.com",
+    "https://dkr-eco.com",
+    "https://www.dkr-eco.com",
 ]
 
 CSRF_COOKIE_SECURE = False
