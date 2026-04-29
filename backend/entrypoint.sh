@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo "Running makemigrations..."
+python manage.py makemigrations eco_app || true
+
 echo "Running migrations..."
 python manage.py migrate
 
