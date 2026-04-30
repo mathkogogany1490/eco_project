@@ -14,8 +14,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, action, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.authentication import BaseAuthentication, JWTAuthentication
+from rest_framework.authentication import BaseAuthentication
 from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .models import User, Place, Contract, WastePrice, Weighing, Mail
 from .serializers import (
