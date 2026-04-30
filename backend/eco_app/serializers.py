@@ -34,10 +34,21 @@ class MailSerializer(serializers.ModelSerializer):
     def get_receiver(self, obj):
         return obj.receiver.email if obj.receiver else None
 
+
 class SendMailSerializer(serializers.Serializer):
     email = serializers.EmailField()
     subject = serializers.CharField(max_length=255)
     content = serializers.CharField()
+
+    def validate_subject(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("제목은 비워둘 수 없습니다.")
+        return value
+
+    def validate_content(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("내용은 비워둘 수 없습니다.")
+        return value
 
 # ==================================================
 # USER

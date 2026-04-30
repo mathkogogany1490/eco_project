@@ -6,18 +6,19 @@ from django.contrib.auth import authenticate
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
 
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.authentication import BaseAuthentication
 
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .models import User, Place, Contract, WastePrice, Weighing
+from .models import User, Place, Contract, WastePrice, Weighing, Mail
 from .serializers import (
     LoginSerializer,
     PlaceSerializer,
@@ -29,17 +30,17 @@ from .serializers import (
     SendMailSerializer,
 )
 from .permissions import IsAdminRole, VerifySystemKey
-# views.py
-from .models import Mail
 
 
 # ==================================================
 # ✉️ 메일 보내기
 # ==================================================
 
+
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def send_mail(request):
+def send_mail_view(request):
     serializer = SendMailSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
@@ -48,19 +49,30 @@ def send_mail(request):
     subject = serializer.validated_data["subject"]
     content = serializer.validated_data["content"]
 
-    receiver = User.objects.filter(email=receiver_email).first()
+    # 👉 1. 실제 이메일 전송 (핵심)
+    send_mail(
+        subject=subject,
+        message=content,
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[receiver_email],
+        fail_silently=False,
+    )
 
-    if not receiver:
-        return Response({"detail": "받는 사용자가 없습니다"}, status=400)
+    # 👉 2. DB 저장 (선택)
+    receiver = User.objects.filter(email=receiver_email).first()
 
     mail = Mail.objects.create(
         sender=sender,
-        receiver=receiver,
+        receiver=receiver,  # 없으면 None 가능
         subject=subject,
-        content=content
+        content=content,
+        external_sender=receiver_email
     )
 
-    return Response(MailSerializer(mail).data)
+    return Response({
+        "message": "메일 전송 완료",
+        "data": MailSerializer(mail).data
+    })
 
 
 # ==================================================
