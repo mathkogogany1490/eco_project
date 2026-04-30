@@ -11,7 +11,7 @@ from .views import (
     WastePriceViewSet,
     WeighingViewSet,
     health_check,
-    send_mail,
+    sent_mail_view,
     inbox,
     sent_mail,
     mail_detail,
@@ -48,7 +48,7 @@ urlpatterns = [
     # ==================================================
     # ✉️ MAIL API
     # ==================================================
-    path("send-mail/", send_mail),
+    path("send-mail/", sent_mail_view),
     path("inbox/", inbox),
     path("sent-mail/", sent_mail),
 

@@ -36,8 +36,6 @@ from .permissions import IsAdminRole, VerifySystemKey
 # ✉️ 메일 보내기
 # ==================================================
 
-
-@csrf_exempt
 @api_view(["POST"])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
