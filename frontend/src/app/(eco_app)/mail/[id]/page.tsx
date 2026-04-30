@@ -1,11 +1,14 @@
+"use client";
+
+import { useParams } from "next/navigation";
 import MailDetail from "@/components/mail/MailDetail";
 
-interface PageProps {
-    params: {
-        id: string;
-    };
-}
+export default function Page() {
+    const params = useParams();
 
-export default function Page({ params }: PageProps) {
-    return <MailDetail id={params.id} />;
+    const id = params?.id as string;
+
+    if (!id) return <div>잘못된 접근</div>;
+
+    return <MailDetail id={id} />;
 }
