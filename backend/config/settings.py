@@ -25,13 +25,19 @@ SECRET_KEY = env("SECRET_KEY")
 APP_ENV = env("APP_ENV", default="development")
 APP_NAME = env("APP_NAME", default="Eco-Scale API")
 
-DEBUG = APP_ENV != "production"
+# ================================
+# DEBUG (운영 기준)
+# ================================
+DEBUG = False
 
-if DEBUG:
-    ALLOWED_HOSTS = ["*"]
-else:
-    ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
-
+# ================================
+# HOST 설정 (중요)
+# ================================
+ALLOWED_HOSTS = [
+    "dkr-eco.com",
+    "www.dkr-eco.com",
+    "3.36.130.182",
+]
 
 # ==================================================
 # Application
@@ -171,9 +177,6 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 
-
-
-
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -183,11 +186,10 @@ REST_FRAMEWORK = {
     ],
 }
 
-# ==================================================
-# CSRF
-# ==================================================
+# ================================
+# CSRF 설정
+# ================================
 CSRF_TRUSTED_ORIGINS = [
-    "http://3.36.130.182",
     "http://dkr-eco.com",
     "http://www.dkr-eco.com",
     "https://dkr-eco.com",
@@ -202,17 +204,15 @@ CSRF_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_DOMAIN = None
 SESSION_COOKIE_DOMAIN = None
 
-SECURE_PROXY_SSL_HEADER = None
+# ================================
+# Proxy (중요)
+# ================================
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # CSRF_COOKIE_SECURE = True
 # SESSION_COOKIE_SECURE = True
 
 # 🔥 이거 추가 (핵심)
 # CSRF_COOKIE_SAMESITE = "None"
-
-# ==================================================
-# Proxy (Nginx)
-# ==================================================
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 # ==================================================
@@ -242,11 +242,10 @@ SYSTEM_API_KEY = env("SYSTEM_API_KEY", default=None)
 # Production 보안 설정
 # ==================================================
 if not DEBUG:
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
-    # 🔥 핵심 수정
     SECURE_SSL_REDIRECT = False
 
 # ==================================================
