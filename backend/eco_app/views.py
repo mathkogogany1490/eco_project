@@ -37,7 +37,7 @@ from .permissions import IsAdminRole, VerifySystemKey
 # ==================================================
 
 
-
+@csrf_exempt
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def send_mail_view(request):
