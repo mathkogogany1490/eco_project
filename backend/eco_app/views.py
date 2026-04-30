@@ -11,11 +11,10 @@ from django.core.mail import send_mail
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework.decorators import api_view, permission_classes, action, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.authentication import BaseAuthentication
-
+from rest_framework.authentication import BaseAuthentication, JWTAuthentication
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .models import User, Place, Contract, WastePrice, Weighing, Mail
@@ -39,6 +38,7 @@ from .permissions import IsAdminRole, VerifySystemKey
 
 @csrf_exempt
 @api_view(["POST"])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def send_mail_view(request):
     serializer = SendMailSerializer(data=request.data)
