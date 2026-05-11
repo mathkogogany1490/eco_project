@@ -53,16 +53,17 @@ export const uploadPlacePhoto = async (
     }
 
     const formData = new FormData()
+
     formData.append('photo', file)
     formData.append('latitude', String(latitude))
     formData.append('longitude', String(longitude))
 
-    // 🔥 핵심
     formData.append('qr_token', qrToken.trim())
 
+    // 🔥 수정 핵심
     const res = await api.post<Place>(
-        '/places/upload_photo/',
-        formData   // 🔥 headers 제거
+        '/places/mobile_upload/',
+        formData
     )
 
     return res.data

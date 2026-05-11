@@ -34,6 +34,9 @@ DEBUG = False
 # HOST 설정 (중요)
 # ================================
 ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+
     "dkr-eco.com",
     "www.dkr-eco.com",
     "3.36.130.182",
@@ -170,9 +173,13 @@ if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
     CORS_ALLOWED_ORIGINS = [
+        "http://localhost",
+        "http://localhost:3000",
+        "http://127.0.0.1",
+        "http://127.0.0.1:3000",
+
         "https://www.dkr-eco.com",
     ]
-
 CORS_ALLOW_CREDENTIALS = True
 
 
@@ -190,6 +197,11 @@ REST_FRAMEWORK = {
 # CSRF 설정
 # ================================
 CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://127.0.0.1",
+    "http://127.0.0.1:3000",
+
     "http://dkr-eco.com",
     "http://www.dkr-eco.com",
     "https://dkr-eco.com",

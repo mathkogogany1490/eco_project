@@ -150,7 +150,11 @@ const placeSlice = createSlice({
                         (p) => p.id === action.payload.id
                     )
                     if (index !== -1) {
-                        state.items[index] = action.payload
+
+                        state.items[index] = {
+                            ...state.items[index],
+                            ...action.payload,
+                        }
                     }
                     state.status = 'succeeded'
                 }
