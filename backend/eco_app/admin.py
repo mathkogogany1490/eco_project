@@ -2,6 +2,44 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import User, Contract, WastePrice, Weighing, Place
 from .models import Mail
+from .models import (
+    VehicleDispatch,
+)
+
+
+# ==================================================
+# 🚚 Vehicle Dispatch Admin
+# ==================================================
+@admin.register(VehicleDispatch)
+class VehicleDispatchAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "id",
+        "company_name",
+        "vehicle_type",
+        "vehicle_count",
+        "dispatch_date",
+        "dispatch_time",
+        "destination",
+        "created_at",
+    )
+
+    search_fields = (
+        "company_name",
+        "vehicle_type",
+        "destination",
+    )
+
+    list_filter = (
+        "dispatch_date",
+        "vehicle_type",
+    )
+
+    ordering = (
+        "-created_at",
+    )
+
+
 
 @admin.register(Mail)
 class MailAdmin(admin.ModelAdmin):
