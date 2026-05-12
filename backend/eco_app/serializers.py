@@ -117,15 +117,33 @@ class PlaceSerializer(serializers.ModelSerializer):
         ]
 
     def get_image_url(self, obj):
-        request = self.context.get("request")
 
-        if not obj.image:
+        try:
+
+            # 이미지 없으면 None
+            if not obj.image:
+                return None
+
+            # 파일 자체가 없는 경우 방지
+            if not obj.image.name:
+                return None
+
+            image_url = obj.image.url
+
+            request = self.context.get("request")
+
+            # request 있으면 절대경로
+            if request:
+                return request.build_absolute_uri(image_url)
+
+            # 없으면 상대경로
+            return image_url
+
+        except Exception as e:
+
+            print("IMAGE_URL_ERROR:", e)
+
             return None
-
-        if request:
-            return request.build_absolute_uri(obj.image.url)
-
-        return obj.image.url
 
 
 # ==================================================

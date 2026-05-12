@@ -333,11 +333,25 @@ class ContractViewSet(viewsets.ModelViewSet):
 # ==================================================
 # 📍 PLACE
 # ==================================================
+# ==================================================
+# 📍 PLACE
+# ==================================================
 class PlaceViewSet(viewsets.ModelViewSet):
 
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
     permission_classes = [AllowAny]
+
+    # =================================================
+    # serializer context 추가 (중요)
+    # =================================================
+    def get_serializer_context(self):
+
+        context = super().get_serializer_context()
+
+        context["request"] = self.request
+
+        return context
 
     # ------------------------------------------------
     # 📸 사진 업로드 (기존 place 수정)
@@ -351,23 +365,35 @@ class PlaceViewSet(viewsets.ModelViewSet):
     def upload_photo(self, request, pk=None):
 
         place = self.get_object()
+
         photo = request.FILES.get("photo")
 
         if not photo:
+
             return Response(
                 {"detail": "photo required"},
                 status=400
             )
 
         # 기존 파일 삭제
-        if place.image and os.path.isfile(place.image.path):
+        if (
+            place.image and
+            place.image.name and
+            os.path.isfile(place.image.path)
+        ):
             os.remove(place.image.path)
 
         place.image = photo
+
         place.save()
 
+        serializer = PlaceSerializer(
+            place,
+            context={"request": request}
+        )
+
         return Response(
-            PlaceSerializer(place, context={"request": request}).data,
+            serializer.data,
             status=200
         )
 
@@ -383,25 +409,33 @@ class PlaceViewSet(viewsets.ModelViewSet):
     def mobile_upload(self, request):
 
         photo = request.FILES.get("photo")
+
         latitude = request.data.get("latitude")
+
         longitude = request.data.get("longitude")
 
         if not photo:
+
             return Response(
                 {"detail": "photo required"},
                 status=400
             )
 
         if not latitude or not longitude:
+
             return Response(
                 {"detail": "latitude / longitude required"},
                 status=400
             )
 
         try:
+
             latitude = float(latitude)
+
             longitude = float(longitude)
+
         except (TypeError, ValueError):
+
             return Response(
                 {"detail": "invalid latitude / longitude"},
                 status=400
@@ -416,14 +450,18 @@ class PlaceViewSet(viewsets.ModelViewSet):
             address="",
             size="",
             count=1,
-            image=photo,   # 모델 필드명이 image 라는 전제
+            image=photo,
+        )
+
+        serializer = PlaceSerializer(
+            place,
+            context={"request": request}
         )
 
         return Response(
-            PlaceSerializer(place, context={"request": request}).data,
+            serializer.data,
             status=201
         )
-
 # ==================================================
 # 💰 WASTE PRICE
 # ==================================================
