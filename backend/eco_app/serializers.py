@@ -4,9 +4,24 @@ from django.contrib.auth.hashers import make_password
 from .models import User, Place, Contract, WastePrice, Weighing
 from .models import Mail
 from django.contrib.auth import get_user_model
+from .models import VehicleDispatch
 
 
 User = get_user_model()
+
+
+# ==================================================
+# 🚚 Vehicle Dispatch Serializer
+# ==================================================
+class VehicleDispatchSerializer(
+    serializers.ModelSerializer
+):
+
+    class Meta:
+
+        model = VehicleDispatch
+
+        fields = "__all__"
 
 class MailSerializer(serializers.ModelSerializer):
     sender = serializers.SerializerMethodField()
@@ -91,57 +106,132 @@ class TokenResponseSerializer(serializers.Serializer):
     token_type = serializers.CharField(default="bearer")
     role = serializers.CharField()
 
-
 # ==================================================
-# PLACE
+# 📍 PLACE SERIALIZER
 # ==================================================
 
 class PlaceSerializer(serializers.ModelSerializer):
+
+    # ==================================================
+    # 이미지 URL
+    # ==================================================
     image_url = serializers.SerializerMethodField()
 
+    # ==================================================
+    # 오디오 URL
+    # ==================================================
+    audio_url = serializers.SerializerMethodField()
+
     class Meta:
+
         model = Place
+
         fields = [
+
+            # 기본
             "id",
+
+            # 회사 정보
             "company_name",
+
+            # 위치
             "latitude",
             "longitude",
+
+            # 연락처
             "phone_number",
+
+            # 주소
             "address",
+
+            # 상태
             "block_state",
+
+            # ==================================================
+            # 이미지
+            # ==================================================
+            "image",
             "image_url",
+
+            # ==================================================
+            # 오디오
+            # ==================================================
+            "audio",
+            "audio_url",
+
+            # ==================================================
+            # Whisper 결과
+            # ==================================================
+            "transcript",
+
+            # ==================================================
+            # 공사 정보
+            # ==================================================
             "start_date",
             "end_date",
+
             "size",
             "count",
+
+            # 생성일
+            "created_at",
         ]
 
+    # ==================================================
+    # 이미지 URL
+    # ==================================================
     def get_image_url(self, obj):
 
         try:
 
-            # 이미지 없으면 None
             if not obj.image:
                 return None
 
-            # 파일 자체가 없는 경우 방지
             if not obj.image.name:
                 return None
 
-            image_url = obj.image.url
-
             request = self.context.get("request")
 
-            # request 있으면 절대경로
             if request:
-                return request.build_absolute_uri(image_url)
 
-            # 없으면 상대경로
-            return image_url
+                return request.build_absolute_uri(
+                    obj.image.url
+                )
+
+            return obj.image.url
 
         except Exception as e:
 
             print("IMAGE_URL_ERROR:", e)
+
+            return None
+
+    # ==================================================
+    # 오디오 URL
+    # ==================================================
+    def get_audio_url(self, obj):
+
+        try:
+
+            if not obj.audio:
+                return None
+
+            if not obj.audio.name:
+                return None
+
+            request = self.context.get("request")
+
+            if request:
+
+                return request.build_absolute_uri(
+                    obj.audio.url
+                )
+
+            return obj.audio.url
+
+        except Exception as e:
+
+            print("AUDIO_URL_ERROR:", e)
 
             return None
 

@@ -13,7 +13,10 @@ import ContractSidebarList from '@/components/contracts/ContractSidebarList'
 
 const menus = [
     { name: '계량관리', path: '/weighings', icon: '⚖️' },
-    { name: '매출관리', path: '/sales', icon: '💰' },
+
+    // 🔥 sales 제거 → vehicleDispatch 변경
+    { name: '배차관리', path: '/vehicleDispatch', icon: '🚚' },
+
     { name: '메일', path: '/mail', icon: '📧' },
     { name: '설정', path: '/settings', icon: '⚙️' },
 ];

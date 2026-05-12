@@ -7,6 +7,53 @@ from django.conf import settings
 User = settings.AUTH_USER_MODEL
 
 
+
+# ==================================================
+# 🚚 Vehicle Dispatch
+# ==================================================
+class VehicleDispatch(models.Model):
+
+    company_name = models.CharField(
+        max_length=255
+    )
+
+    vehicle_type = models.CharField(
+        max_length=100
+    )
+
+    vehicle_count = models.IntegerField(
+        default=1
+    )
+
+    dispatch_date = models.DateField()
+
+    dispatch_time = models.TimeField(
+        null=True,
+        blank=True
+    )
+
+    destination = models.CharField(
+        max_length=255,
+        blank=True,
+        default=""
+    )
+
+    memo = models.TextField(
+        blank=True,
+        default=""
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+
+        return (
+            f"{self.company_name} - "
+            f"{self.vehicle_type}"
+        )
+
 class Mail(models.Model):
     # 🔥 내부 사용자 (보낸 사람)
     sender = models.ForeignKey(
@@ -71,33 +118,93 @@ class User(AbstractUser):
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     qr_token = models.CharField(max_length=100, null=True, blank=True)
 
-# =========================
-# Place
-# =========================
+# ==================================================
+# 📍 PLACE MODEL
+# ==================================================
 class Place(models.Model):
 
-    company_name = models.CharField(max_length=255)
+    company_name = models.CharField(
+        max_length=255,
+        blank=True,
+        default=""
+    )
+
     latitude = models.FloatField()
     longitude = models.FloatField()
 
-    phone_number = models.CharField(max_length=50, null=True, blank=True)
-    address = models.TextField(null=True, blank=True)
+    phone_number = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True
+    )
 
-    block_state = models.CharField(max_length=50, null=True, blank=True)
+    address = models.TextField(
+        null=True,
+        blank=True
+    )
 
-    image = models.ImageField(upload_to="places/", null=True, blank=True)
+    block_state = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True
+    )
 
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
+    # =========================
+    # 사진
+    # =========================
+    image = models.ImageField(
+        upload_to="places/",
+        null=True,
+        blank=True
+    )
 
-    size = models.CharField(max_length=50, null=True, blank=True)
-    count = models.IntegerField(null=True, blank=True)
+    # =========================
+    # 음성 파일 추가
+    # =========================
+    audio = models.FileField(
+        upload_to="places/audio/",
+        null=True,
+        blank=True
+    )
+
+    # =========================
+    # Whisper 변환 텍스트
+    # =========================
+    transcript = models.TextField(
+        blank=True,
+        default=""
+    )
+
+    # =========================
+    # 공사 정보
+    # =========================
+    start_date = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    end_date = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    size = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True
+    )
+
+    count = models.IntegerField(
+        null=True,
+        blank=True
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
 
     def __str__(self):
-        return f"{self.company_name}"
-    def __str__(self):
-        return f"{self.company_name}"
-
+        return self.company_name or f"Place {self.id}"
 
 # =========================
 # Contract

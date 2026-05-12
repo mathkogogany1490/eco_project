@@ -292,150 +292,112 @@ export default function HoveredPlaceInfo({
 const BalloonContainer = styled.div`
 
     position: relative;
-
     width: 280px;
-
     background: white;
-
     border-radius: 16px;
-
     padding: 12px;
-
     box-shadow:
             0 10px 30px rgba(0,0,0,0.15);
-
     border: 1px solid #e5e7eb;
-
     z-index: 99999;
 `
 
 const Tail = styled.div`
 
     position: absolute;
-
     bottom: -8px;
-
     left: 24px;
-
     width: 16px;
-
     height: 16px;
-
     background: white;
-
     border-right: 1px solid #e5e7eb;
-
     border-bottom: 1px solid #e5e7eb;
-
     transform: rotate(45deg);
 `
 
 const ImageWrapper = styled.div`
 
     width: 100%;
-
-    height: 160px;
-
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
-
     border-radius: 12px;
-
     background: #f3f4f6;
-
     margin-bottom: 10px;
+    padding: 8px;
 `
 
 const PreviewImage = styled.img`
 
-    width: 100%;
-
-    height: 100%;
-
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
 `
 
 const TopRow = styled.div`
 
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
     gap: 10px;
-
     margin-bottom: 8px;
 `
 
 const CompanyName = styled.div`
 
     font-size: 16px;
-
     font-weight: 700;
-
     color: #111827;
-
     line-height: 1.3;
 `
 
 const PhoneNumber = styled.div`
 
     font-size: 13px;
-
     color: #6b7280;
-
     white-space: nowrap;
 `
 
 const InlineRow = styled.div`
 
     display: flex;
-
     flex-wrap: wrap;
-
     gap: 10px;
-
     margin-bottom: 8px;
 `
 
 const InfoText = styled.div`
 
     font-size: 12px;
-
     color: #6b7280;
 `
 
 const ProgressWrapper = styled.div`
 
     width: 100%;
-
     height: 8px;
-
     background: #f3f4f6;
-
     border-radius: 999px;
-
     overflow: hidden;
-
     margin-top: 8px;
-
     margin-bottom: 8px;
 `
 
 const ProgressBar = styled.div`
 
     height: 100%;
-
     transition: width 0.2s ease;
 `
 
 const BottomRow = styled.div`
 
     display: flex;
-
     justify-content: space-between;
-
     font-size: 11px;
-
     color: #9ca3af;
 `

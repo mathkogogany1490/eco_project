@@ -30,7 +30,32 @@ from .serializers import (
     SendMailSerializer,
 )
 from .permissions import IsAdminRole, VerifySystemKey
+# 🔥 Whisper 처리 함수
+from .services.stt_service import process_audio
 
+from .models import VehicleDispatch
+from .serializers import VehicleDispatchSerializer
+
+# ==================================================
+# 🚚 Vehicle Dispatch ViewSet
+# ==================================================
+class VehicleDispatchViewSet(
+    viewsets.ModelViewSet
+):
+
+    queryset = (
+        VehicleDispatch.objects
+        .all()
+        .order_by("-created_at")
+    )
+
+    serializer_class = (
+        VehicleDispatchSerializer
+    )
+
+    permission_classes = [
+        AllowAny
+    ]
 
 # ==================================================
 # ✉️ 메일 보내기
@@ -338,12 +363,14 @@ class ContractViewSet(viewsets.ModelViewSet):
 # ==================================================
 class PlaceViewSet(viewsets.ModelViewSet):
 
-    queryset = Place.objects.all()
+    queryset = Place.objects.all().order_by("-created_at")
+
     serializer_class = PlaceSerializer
+
     permission_classes = [AllowAny]
 
     # =================================================
-    # serializer context 추가 (중요)
+    # serializer context 추가
     # =================================================
     def get_serializer_context(self):
 
@@ -398,7 +425,8 @@ class PlaceViewSet(viewsets.ModelViewSet):
         )
 
     # ------------------------------------------------
-    # 📱 모바일 업로드 (새 place 생성)
+    # 🎤 모바일 업로드
+    # 사진 + 음성 + Whisper
     # ------------------------------------------------
     @action(
         detail=False,
@@ -408,23 +436,27 @@ class PlaceViewSet(viewsets.ModelViewSet):
     )
     def mobile_upload(self, request):
 
+        # ==================================================
+        # 파일
+        # ==================================================
         photo = request.FILES.get("photo")
 
+        audio = request.FILES.get("audio")
+
+        # ==================================================
+        # 위치
+        # ==================================================
         latitude = request.data.get("latitude")
 
         longitude = request.data.get("longitude")
 
-        if not photo:
-
-            return Response(
-                {"detail": "photo required"},
-                status=400
-            )
-
         if not latitude or not longitude:
 
             return Response(
-                {"detail": "latitude / longitude required"},
+                {
+                    "detail":
+                        "latitude / longitude required"
+                },
                 status=400
             )
 
@@ -437,29 +469,135 @@ class PlaceViewSet(viewsets.ModelViewSet):
         except (TypeError, ValueError):
 
             return Response(
-                {"detail": "invalid latitude / longitude"},
+                {
+                    "detail":
+                        "invalid latitude / longitude"
+                },
                 status=400
             )
 
+        # ==================================================
+        # 기본값
+        # ==================================================
+        transcript = ""
+
+        dispatch_data = []
+
+        company_name = ""
+
+        vehicle_type = ""
+
+        vehicle_count = 1
+
+        # ==================================================
+        # 기본 Place 생성
+        # ==================================================
         place = Place.objects.create(
+
             company_name="",
+
             latitude=latitude,
             longitude=longitude,
+
             phone_number="",
+
             block_state="",
+
             address="",
+
             size="",
+
             count=1,
-            image=photo,
+
+            image=photo if photo else None,
+
+            audio=audio if audio else None,
+
+            transcript="",
         )
 
+        # ==================================================
+        # Whisper 처리
+        # ==================================================
+        if audio:
+
+            try:
+
+                # ==================================================
+                # Whisper 분석
+                # ==================================================
+                result = process_audio(
+                    place.audio.path
+                )
+
+                transcript = result.get(
+                    "transcript",
+                    ""
+                )
+
+                dispatch_data = result.get(
+                    "dispatch_data",
+                    []
+                )
+
+                # ==================================================
+                # dispatch 자동 추출
+                # ==================================================
+                if dispatch_data:
+
+                    first = dispatch_data[0]
+
+                    company_name = (
+                        first.get("company")
+                        or ""
+                    )
+
+                    vehicle_type = (
+                        first.get("vehicle_type")
+                        or ""
+                    )
+
+                    vehicle_count = (
+                        first.get("vehicle_count")
+                        or 1
+                    )
+
+                # ==================================================
+                # Place 업데이트
+                # ==================================================
+                place.company_name = company_name
+
+                place.size = vehicle_type
+
+                place.count = vehicle_count
+
+                place.transcript = transcript
+
+                place.save()
+
+            except Exception as e:
+
+                print("\nWHISPER_ERROR:")
+                print(e)
+
+        # ==================================================
+        # Serializer
+        # ==================================================
         serializer = PlaceSerializer(
             place,
             context={"request": request}
         )
 
         return Response(
-            serializer.data,
+            {
+                **serializer.data,
+
+                # ==================================================
+                # GPT 분석 결과
+                # ==================================================
+                "dispatch_data":
+                    dispatch_data
+            },
             status=201
         )
 # ==================================================

@@ -246,62 +246,88 @@ export default function PlaceModal({
 
                     </ImageWrapper>
 
-                    <Upload
-                        showUploadList={false}
-                        beforeUpload={async (file) => {
+                    {/* 버튼 영역 */}
+                    <ActionRow>
 
-                            const formData = new FormData()
+                        {/* 업로드 */}
+                        <Upload
+                            showUploadList={false}
+                            beforeUpload={async (file) => {
 
-                            formData.append(
-                                'photo',
-                                file
-                            )
+                                const formData = new FormData()
 
-                            const token =
-                                localStorage.getItem(
-                                    'access_token'
+                                formData.append(
+                                    'photo',
+                                    file
                                 )
 
-                            try {
+                                const token =
+                                    localStorage.getItem(
+                                        'access_token'
+                                    )
 
-                                const res = await fetch(
-                                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/places/${place.id}/upload_photo/`,
-                                    {
-                                        method: 'POST',
-                                        headers: {
-                                            Authorization:
-                                                `Bearer ${token}`,
-                                        },
-                                        body: formData,
-                                    }
-                                )
+                                try {
 
-                                if (!res.ok)
-                                    throw new Error()
+                                    const res = await fetch(
+                                        `${process.env.NEXT_PUBLIC_API_BASE_URL}/places/${place.id}/upload_photo/`,
+                                        {
+                                            method: 'POST',
+                                            headers: {
+                                                Authorization:
+                                                    `Bearer ${token}`,
+                                            },
+                                            body: formData,
+                                        }
+                                    )
 
-                                message.success(
-                                    '사진 업로드 완료'
-                                )
+                                    if (!res.ok)
+                                        throw new Error()
 
-                                // 🔥 핵심
-                                dispatch(fetchPlaces())
+                                    message.success(
+                                        '사진 업로드 완료'
+                                    )
 
-                            } catch {
+                                    // 장소 재조회
+                                    dispatch(fetchPlaces())
 
-                                message.error(
-                                    '사진 업로드 실패'
-                                )
-                            }
+                                } catch {
 
-                            return false
-                        }}
-                    >
-                        <Button
-                            icon={<UploadOutlined />}
+                                    message.error(
+                                        '사진 업로드 실패'
+                                    )
+                                }
+
+                                return false
+                            }}
                         >
-                            사진 등록
-                        </Button>
-                    </Upload>
+                            <Button
+                                icon={<UploadOutlined />}
+                            >
+                                사진 등록
+                            </Button>
+                        </Upload>
+
+                        {/* 다운로드 */}
+                        {place.image_url && (
+
+                            <a
+                                href={
+                                    place.image_url.startsWith('http')
+                                        ? place.image_url
+                                        : `http://localhost${place.image_url}`
+                                }
+                                download
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <Button>
+                                    사진 다운로드
+                                </Button>
+                            </a>
+
+                        )}
+
+                    </ActionRow>
 
                 </Form.Item>
 
@@ -457,13 +483,9 @@ const StyledModal = styled(Modal)`
     .ant-modal-content {
 
         border-radius: 18px;
-
         padding: 20px;
-
         max-height: 90vh;
-
         overflow: hidden;
-
         display: flex;
         flex-direction: column;
     }
@@ -471,16 +493,13 @@ const StyledModal = styled(Modal)`
     .ant-modal-body {
 
         overflow-y: auto;
-
         max-height: calc(90vh - 120px);
-
         padding-right: 4px;
     }
 
     .ant-modal-header {
 
         border-bottom: none;
-
         margin-bottom: 16px;
     }
 
@@ -507,17 +526,17 @@ const StyledModal = styled(Modal)`
 const StyledForm = styled(Form)`
     width: 100%;
 `
-
-const InlineRow = styled.div`
-
+const ActionRow = styled.div`
     display: flex;
-
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+`
+const InlineRow = styled.div`
+    display: flex;
     gap: 12px;
-
     width: 100%;
-
     @media (max-width: 768px) {
-
         flex-direction: column;
     }
 `
@@ -543,33 +562,22 @@ const ButtonRow = styled.div`
 const ImageWrapper = styled.div`
 
     width: 100%;
-
     min-height: 240px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     overflow: hidden;
-
     border-radius: 12px;
-
     border: 1px solid #f0f0f0;
-
     background: #f8f8f8;
-
     padding: 12px;
-
     margin-bottom: 12px;
 `
 
 const PreviewImage = styled.img`
 
     max-width: 100%;
-
     max-height: 260px;
-
     object-fit: contain;
-
     display: block;
 `

@@ -17,6 +17,7 @@ from .views import (
     mail_detail,
     mark_as_read,
     delete_mail,
+    VehicleDispatchViewSet,
 )
 
 # ==================================================
@@ -27,7 +28,11 @@ router.register(r"contracts", ContractViewSet, basename="contract")
 router.register(r"places", PlaceViewSet, basename="place")
 router.register(r"wastes", WastePriceViewSet, basename="waste")
 router.register(r"weighings", WeighingViewSet, basename="weighing")
-
+router.register(
+    r"vehicle-dispatch",
+    VehicleDispatchViewSet,
+    basename="vehicle-dispatch"
+)
 
 # ==================================================
 # URL Patterns
